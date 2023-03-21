@@ -9,7 +9,7 @@
         <h3>Vítejte v aplikaci StinBank</h3>
 
 
-      <button class="logout-button">Odhlásit se</button>
+      <button class="logout-button" @click="logout">Odhlásit se</button>
 
 
 
@@ -24,7 +24,16 @@
 
 <script>
 export default {
-  name: "headerPage"
+  name: "headerPage",
+
+  methods:{
+
+    logout(){
+      localStorage.removeItem('client');
+      this.$router.push('./');
+    }
+
+  }
 }
 </script>
 

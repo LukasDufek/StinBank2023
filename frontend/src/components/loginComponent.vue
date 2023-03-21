@@ -3,13 +3,13 @@
     <div class="card card-container">
       <h1 class="welcome">Vítejte v aplikaci</h1> <h3 class="logo">StinApp</h3>
       <h1 class="login-input">Přihlášení</h1>
-      <img class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+      <img class="profile-img-card" alt="" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
 
       <form class="form-signin">
         <span class="reauth-email"></span>
         <input type="text" id="email-adress" placeholder="Email" v-model="email" />
         <input type="password" id="inputPassword" placeholder="Heslo" v-model="password" />
-        <button class="login-button" value="login" type="submit">Přihlásit</button>
+        <button class="login-button" value="login" @click="loginSystem" type="submit">Přihlásit</button>
 
 
         <br>
@@ -20,6 +20,9 @@
 </template>
 
 <script>
+
+import axios from "axios";
+
 export default {
   name: "loginComponent",
 
@@ -28,11 +31,52 @@ export default {
       email: '',
       password: '',
       msg: '',
-      user: {},
-      users: []
+      client: {},
+      clients: []
 
 
     };
+  },
+
+  async mounted() {
+
+    this.clients=[];
+    try {
+      this.clients = (await axios.get("/api/clients")).data;
+    } catch (err) {
+      console.log(err);
+    }
+    console.log(this.clients);
+  },
+
+  methods:{
+
+
+    login_compare(){
+      for(let i=0; i<this.clients.length; i++){
+        if(this.clients[i].mail === this.email && this.clients[i].password === this.password){
+          localStorage.setItem('client', JSON.stringify(this.clients[i]));
+          return true;
+
+        }
+
+      }
+      return false;
+
+    },
+
+    loginSystem(){
+
+        if(this.login_compare()){
+          //push do druheho overovaciho okna
+          this.$router.push('./profile');
+
+        }else{
+          console.log('Nesprávné jméno nebo heslo');
+        }
+
+    }
+
   },
 
 }
