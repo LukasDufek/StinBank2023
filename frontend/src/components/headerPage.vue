@@ -65,7 +65,7 @@ export default {
   margin-left: 1em;
   text-decoration: none;
 
-  font-size: 2vw;
+  font-size: 20px;
   text-align: center;
 
 
@@ -95,7 +95,7 @@ export default {
 .logout-button{
   position: fixed;
   right: 5%;
-  top: 5%;
+  top: 2%;
 
   margin-left: 1rem;
 

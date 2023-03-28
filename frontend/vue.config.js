@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+
   devServer:{
     proxy: {
       '/api' :{
@@ -9,7 +10,9 @@ module.exports = {
     }
 
 
+
   },
+
   chainWebpack: config => {
     config.module
         .rule('raw')

@@ -1,5 +1,6 @@
 const Router  = require('express')
 const Client = require('../../models/Client')
+const https = require("https");
 
 
 const ClientRouter = Router()
@@ -57,5 +58,19 @@ ClientRouter.delete('/:id', async (req, res) => {
     }
 
 })
+
+/*
+ClientRouter.get('/cnbfile', async (req, res) => {
+
+    const response = await fetch('https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt');
+    const body = await response.text();
+    res.status(200).send(body);
+    console.log(body);
+
+
+})
+*/
+
+
 
 module.exports = ClientRouter;

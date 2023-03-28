@@ -11,7 +11,7 @@
       <h3>Příjmení: {{client.last_name}}</h3>
       <h3>Účet: {{actual_account.account_number}}</h3>
       <h3>Měna: {{actual_account.currency}}</h3>
-      <h3>Stav účtu: {{this.actual_account.balance}} {{actual_account.currency}}</h3>
+      <h3>Stav účtu: {{Math.round(this.actual_account.balance*100)/100}} {{actual_account.currency}}</h3>
       <button class="btn" @click="to_changing_phase">Změnit účet</button> <button class="btn" @click="to_creating_phase">Vytvořit nový účet</button>
     </section>
   </div>
@@ -27,7 +27,11 @@
 
     <div v-if="account_creating_phase" class="overView">
       <h2>Vytvoření nového účtu <button class="close-btn" @click="close_window('create_window')" >X</button></h2>
-      <h3> Vyber měnu: <input class="input-submit" type="text" v-model="text"></h3>
+      <h2> Vyber měnu:
+        <select style="font-size: 23px" v-model="testVal">
+          <option v-for="item in this.currencies" :value="item" :key="item">{{item}}</option>
+        </select>
+      </h2>
       <button class="btn" @click="create_new_account(text)">Vytvořit nový účet</button>
 
     </div>
@@ -38,7 +42,7 @@
 
     <div class="overView">
       <h2>Platba</h2>
-      <h3>Stav účtu: {{this.actual_account.balance}} {{actual_account.currency}}</h3>
+      <h3>Stav účtu: {{Math.round(this.actual_account.balance*100)/100}} {{actual_account.currency}}</h3>
       <h3> Částka: <input class="input-submit" type="number" min="0" v-model="money"></h3>
       <h3> Na účet: <input class="input-submit" type="number" v-model="account_number"></h3>
       <button class="btn" @click="make_payment(account_number, money)">Zaplatit</button>
@@ -76,9 +80,13 @@
 <script>
 
 import HeaderPage from "@/components/headerPage";
+import {PaymentsOptions} from "@/paymentsOptions"
 import axios from "axios";
 import store from "@/store/store";
 const client = JSON.parse(localStorage.client ?? '{}');
+
+
+const myPaymentsOptions = new PaymentsOptions();
 
 export default {
   name: "overviewComponent",
@@ -90,13 +98,15 @@ export default {
       all_payments:[],
       client:client,
       actual_account:{},
+      currencies: [],
 
       account_creating_phase:false,
       account_changing_phase:false,
 
       money:0,
       account_number:0,
-      text:""
+      text:"",
+      testVal:null
 
       }
      },
@@ -111,6 +121,17 @@ export default {
       console.log(err);
     }
     this.actual_account = this.client.accounts[0];
+
+    let all_currencies = myPaymentsOptions.read_cnb_file();
+    for(let i=0; i<all_currencies.length; i++){
+      this.currencies.push(all_currencies[i].country_code);
+    }
+    this.currencies.push('CZK');
+    this.currencies.sort();
+
+
+
+
 
 
 
@@ -142,11 +163,12 @@ export default {
 
       let new_account_number = this.generate_number_of_account();
       if(!this.control_if_account_exist(new_account_number)){
-        let new_account = {"account_number": new_account_number, "currency": currency, "balance":50000, "payments":[]}
+        let new_account = {"account_number": new_account_number, "currency": currency, "balance":30000, "payments":[]}
         store.commit("add_new_account", new_account);
         location.reload();
       }else{
-        this.create_new_account(currency)
+        this.create_new_account(currency);
+
       }
 
 
@@ -181,7 +203,9 @@ export default {
 
     },
 
+
     make_payment(target_account_number, money){
+
 
       if(money > 0 && money <= this.actual_account.balance) {
 
@@ -190,17 +214,17 @@ export default {
           "from_account": this.actual_account.account_number,
           "to_account": target_account_number,
           "money": money,
-          "currency": this.actual_account.currency
+          "currency": this.actual_account.currency,
+          "date_of_transacrtion":
         };
 
-        store.commit('create_payment', pay_content);
-        //location.reload();
+        myPaymentsOptions.create_payment(pay_content);
+        //store.commit('create_payment', pay_content);
+        location.reload();
       }
 
+    },
 
-
-
-    }
 
 
 

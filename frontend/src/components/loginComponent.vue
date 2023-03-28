@@ -71,6 +71,8 @@ export default {
           //push do druheho overovaciho okna
           this.$router.push('./profile');
 
+          location.reload();
+
         }else{
           console.log('Nesprávné jméno nebo heslo');
         }
