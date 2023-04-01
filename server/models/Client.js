@@ -21,7 +21,8 @@ let Client = new mongoose.Schema({
                     from_account: Number,
                     to_account:Number,
                     money:Number,
-                    currency:String
+                    currency:String,
+                    date_of_transaction:String
                 }
      ],
 

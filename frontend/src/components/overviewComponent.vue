@@ -12,6 +12,10 @@
       <h3>Účet: {{actual_account.account_number}}</h3>
       <h3>Měna: {{actual_account.currency}}</h3>
       <h3>Stav účtu: {{Math.round(this.actual_account.balance*100)/100}} {{actual_account.currency}}</h3>
+      <h3> Vložit peníze: <input class="input-submit" type="number" step="0.01" min="0" v-model="money1">  <button @click="deposit_money(money1)" class="btn">+</button></h3>
+
+
+
       <button class="btn" @click="to_changing_phase">Změnit účet</button> <button class="btn" @click="to_creating_phase">Vytvořit nový účet</button>
     </section>
   </div>
@@ -32,7 +36,7 @@
           <option v-for="item in this.currencies" :value="item" :key="item">{{item}}</option>
         </select>
       </h2>
-      <button class="btn" @click="create_new_account(text)">Vytvořit nový účet</button>
+      <button class="btn" @click="create_new_account(testVal)">Vytvořit nový účet</button>
 
     </div>
 
@@ -41,10 +45,10 @@
 
 
     <div class="overView">
-      <h2>Platba</h2>
-      <h3>Stav účtu: {{Math.round(this.actual_account.balance*100)/100}} {{actual_account.currency}}</h3>
-      <h3> Částka: <input class="input-submit" type="number" min="0" v-model="money"></h3>
-      <h3> Na účet: <input class="input-submit" type="number" v-model="account_number"></h3>
+      <h1>Platba</h1>
+      <h2>Stav účtu: {{Math.round(this.actual_account.balance*100)/100}} {{actual_account.currency}}</h2>
+      <h3 style="font-size: 28px"> Částka: <input class="input-submit" type="number" step="0.01" min="0" v-model="money"></h3>
+      <h3 style="font-size: 28px"> Na účet: <input class="input-submit" type="number" v-model="account_number"></h3>
       <button class="btn" @click="make_payment(account_number, money)">Zaplatit</button>
 
     </div>
@@ -56,6 +60,7 @@
 
       <section v-for="pay in this.client.payments" :key="pay._id">
         <br>
+        <h3>Datum {{pay.date_of_transaction}}</h3>
         <h3>Platba z účtu {{pay.from_account}}</h3>
         <h3>Na účet {{pay.to_account}}</h3>
         <h3>Částka {{pay.money}}</h3>
@@ -80,13 +85,13 @@
 <script>
 
 import HeaderPage from "@/components/headerPage";
-import {PaymentsOptions} from "@/paymentsOptions"
+import {PaymentsTools} from "@/paymentsTools"
 import axios from "axios";
-import store from "@/store/store";
+//import store from "@/store/store";
 const client = JSON.parse(localStorage.client ?? '{}');
 
 
-const myPaymentsOptions = new PaymentsOptions();
+const myPaymentsTools = new PaymentsTools();
 
 export default {
   name: "overviewComponent",
@@ -104,6 +109,7 @@ export default {
       account_changing_phase:false,
 
       money:0,
+      money1:0,
       account_number:0,
       text:"",
       testVal:null
@@ -122,7 +128,7 @@ export default {
     }
     this.actual_account = this.client.accounts[0];
 
-    let all_currencies = myPaymentsOptions.read_cnb_file();
+    let all_currencies = myPaymentsTools.read_cnb_file();
     for(let i=0; i<all_currencies.length; i++){
       this.currencies.push(all_currencies[i].country_code);
     }
@@ -163,8 +169,9 @@ export default {
 
       let new_account_number = this.generate_number_of_account();
       if(!this.control_if_account_exist(new_account_number)){
-        let new_account = {"account_number": new_account_number, "currency": currency, "balance":30000, "payments":[]}
-        store.commit("add_new_account", new_account);
+        let new_account = {"account_number": new_account_number, "currency": currency, "balance":0, "payments":[]}
+        //store.commit("add_new_account", new_account);
+        myPaymentsTools.add_new_account(new_account);
         location.reload();
       }else{
         this.create_new_account(currency);
@@ -204,26 +211,56 @@ export default {
     },
 
 
-    make_payment(target_account_number, money){
+     make_payment(target_account_number, money) {
 
 
-      if(money > 0 && money <= this.actual_account.balance) {
+      if (money > 0 && money <= this.actual_account.balance) {
 
+        let date = new Date().toLocaleDateString('en-GB', {
+          day: 'numeric', month: 'numeric', year: 'numeric'
+        });
+        console.log(typeof date);
         let pay_content = {
-          "mail_sender":this.client.mail,
+          "mail_sender": this.client.mail,
           "from_account": this.actual_account.account_number,
           "to_account": target_account_number,
           "money": money,
           "currency": this.actual_account.currency,
-          "date_of_transacrtion":
+          "date_of_transaction": date
         };
 
-        myPaymentsOptions.create_payment(pay_content);
-        //store.commit('create_payment', pay_content);
-        location.reload();
+        myPaymentsTools.create_payment(pay_content);
+
       }
 
     },
+
+    async deposit_money(money) {
+
+
+      //console.log(typeof money); //number
+      //console.log(typeof this.actual_account.balance); //string
+
+      for(let i=0; i<this.client.accounts.length; i++){
+        if(this.client.accounts[i].account_number === this.actual_account.account_number){
+          this.client.accounts[i].balance += parseFloat(money);
+        }
+      }
+
+      localStorage.setItem('client', JSON.stringify(this.client));
+
+      let id = this.client._id;
+
+      await axios({
+        method: 'put',
+        url: `http://localhost:5000/api/clients/${id}`,
+        data: this.client
+
+      });
+
+
+      location.reload();
+    }
 
 
 
