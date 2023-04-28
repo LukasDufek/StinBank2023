@@ -85,13 +85,14 @@
 <script>
 
 import HeaderPage from "@/components/headerPage";
-import {PaymentsTools} from "@/paymentsTools"
+import PaymentsTools from "../../../server/scripts/paymentsTools"
 import axios from "axios";
 //import store from "@/store/store";
 const client = JSON.parse(localStorage.client ?? '{}');
 
 
-const myPaymentsTools = new PaymentsTools();
+const myPaymentsTools = PaymentsTools;
+//const myPaymentsOperator = new PaymentsOperator();
 
 export default {
   name: "overviewComponent",
@@ -121,7 +122,7 @@ export default {
 
     this.all_clients=[];
     try {
-      this.all_clients = (await axios.get("/api/clients")).data;
+       this.all_clients = Array.from((await axios.get("/api/clients")).data);
 
     } catch (err) {
       console.log(err);
@@ -134,6 +135,9 @@ export default {
     }
     this.currencies.push('CZK');
     this.currencies.sort();
+
+    console.log(this.all_clients[1]);
+    console.log(typeof this.all_clients);
 
 
 
@@ -167,27 +171,23 @@ export default {
 
     create_new_account(currency){
 
-      let new_account_number = this.generate_number_of_account();
-      if(!this.control_if_account_exist(new_account_number)){
-        let new_account = {"account_number": new_account_number, "currency": currency, "balance":0, "payments":[]}
+      //do tridy
+      //let new_account_number = this.generate_number_of_account();
+      //do tridy
+      //podminka by zde teoreticky byt nemusela
+      //if(!this.control_if_account_exist(new_account_number)){
+        //let new_account = {"account_number": new_account_number, "currency": currency, "balance":0, "payments":[]}
         //store.commit("add_new_account", new_account);
-        myPaymentsTools.add_new_account(new_account);
+        //myPaymentsOperator.add_new_account_all(this.client, new_account);
+        myPaymentsTools.add_new_account_all(this.client, currency);
         location.reload();
-      }else{
-        this.create_new_account(currency);
 
-      }
 
 
     },
 
-    generate_number_of_account() {
-      let minm = 100000;
-      let maxm = 999999;
-      return Math.floor(Math.random() * (maxm - minm + 1)) + minm;
-    },
 
-
+/*
     control_if_account_exist(account_number){
 
       let exist = false;
@@ -200,8 +200,9 @@ export default {
         }
       }
       return exist;
-
     },
+
+ */
 
     change_account(account){
 
@@ -229,7 +230,7 @@ export default {
           "date_of_transaction": date
         };
 
-        myPaymentsTools.create_payment(pay_content);
+        myPaymentsTools.create_payment(pay_content, this.client);
 
       }
 

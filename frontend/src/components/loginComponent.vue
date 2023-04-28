@@ -22,6 +22,9 @@
 <script>
 
 import axios from "axios";
+//import mailSender from "../../../server/mailSender";
+
+//const myMailSender = mailSender;
 
 export default {
   name: "loginComponent",
@@ -69,7 +72,8 @@ export default {
 
         if(this.login_compare()){
           //push do druheho overovaciho okna
-          this.$router.push('./profile');
+          //this.$router.push('./profile');
+          //myMailSender.send_mail();
 
           location.reload();
 

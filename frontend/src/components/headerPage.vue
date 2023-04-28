@@ -28,10 +28,14 @@ export default {
 
   methods:{
 
+    /*
     logout(){
       localStorage.removeItem('client');
       this.$router.push('./');
+
     }
+
+     */
 
   }
 }
