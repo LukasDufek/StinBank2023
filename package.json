@@ -2,21 +2,49 @@
   "name": "stinbank2023",
   "version": "1.0.0",
   "description": "simple bank web aplication",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
-    "start": "node index.js",
-    "server": "nodemon index.js --ignore './frontend' ",
+    "start": "node server/index.js",
+    "db:serve": "json-server --watch clients.json --port=5001",
+    "server": "nodemon server/index.js --ignore './frontend' ",
     "frontend": "cd ./frontend &&  npm run serve",
     "dev": "concurrently \"npm run server\" \"npm run frontend\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^7.6.0",
-    "express": "^4.18.2"
+    "axios": "^1.4.0",
+    "axios-mock-adapter": "^1.21.4",
+    "body-parser": "^1.20.2",
+    "concurrently": "^8.0.1",
+    "cors": "^2.8.5",
+    "coverage": "^0.4.1",
+    "ejs": "^3.1.9",
+    "emailjs-com": "^3.2.0",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "jest": "^29.5.0",
+    "localStorage": "^1.0.4",
+    "mockingoose": "^2.16.2",
+    "mongoose": "^7.1.0",
+    "nodemailer": "^6.9.1",
+    "raw-loader": "^4.0.2",
+    "supertest": "^6.3.3",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.21"
+    "@babel/plugin-transform-runtime": "^7.21.4",
+    "@babel/preset-env": "^7.21.5"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "server/**/*.js",
+      "!coverage/**/*.js",
+      "!**/Client.js",
+      "!**/index.js",
+      "!**/jest.config.js",
+      "!**/connection.js"
+    ]
   }
 }

@@ -1,31 +1,26 @@
 <template>
-
   <header class="header">
-
     <div class="logo">StinBank</div>
-
     <div class="navbar">
-
-        <h3>Vítejte v aplikaci StinBank</h3>
-
-
-      <button class="logout-button">Odhlásit se</button>
-
-
-
-
-    </div >
-
-
+      <h3>Vítejte v aplikaci StinBank</h3>
+      <button class="logout-button" @click="logout">Odhlásit se</button>
+    </div>
   </header>
-
-
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
-  name: "headerPage"
-}
+  name: "headerPage",
+  methods: {
+    logout() {
+
+      router.push('./');
+      localStorage.removeItem("client");
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -56,7 +51,7 @@ export default {
   margin-left: 1em;
   text-decoration: none;
 
-  font-size: 2vw;
+  font-size: 20px;
   text-align: center;
 
 
@@ -86,7 +81,7 @@ export default {
 .logout-button{
   position: fixed;
   right: 5%;
-  top: 5%;
+  top: 2%;
 
   margin-left: 1rem;
 
