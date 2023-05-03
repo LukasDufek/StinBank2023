@@ -84,10 +84,17 @@
 
 <script>
 
+/*
 import HeaderPage from "@/components/headerPage";
 import PaymentsTools from "../../../server/scripts/paymentsTools"
 import axios from "axios";
 //import store from "@/store/store";
+const client = JSON.parse(localStorage.client ?? '{}');
+
+ */
+const HeaderPage = require("@/components/headerPage").default;
+const PaymentsTools = require("../../../server/scripts/paymentsTools");
+const axios = require("axios");
 const client = JSON.parse(localStorage.client ?? '{}');
 
 
@@ -171,14 +178,6 @@ export default {
 
     create_new_account(currency){
 
-      //do tridy
-      //let new_account_number = this.generate_number_of_account();
-      //do tridy
-      //podminka by zde teoreticky byt nemusela
-      //if(!this.control_if_account_exist(new_account_number)){
-        //let new_account = {"account_number": new_account_number, "currency": currency, "balance":0, "payments":[]}
-        //store.commit("add_new_account", new_account);
-        //myPaymentsOperator.add_new_account_all(this.client, new_account);
         myPaymentsTools.add_new_account_all(this.client, currency);
         location.reload();
 
@@ -187,22 +186,6 @@ export default {
     },
 
 
-/*
-    control_if_account_exist(account_number){
-
-      let exist = false;
-      for(let i=0; i<this.all_clients.length; i++){
-        for(let j=0; j<this.all_clients[i].accounts.length; j++){
-
-          if(account_number === this.all_clients[i].accounts[j].account_number){
-            exist = true;
-          }
-        }
-      }
-      return exist;
-    },
-
- */
 
     change_account(account){
 
@@ -241,23 +224,8 @@ export default {
 
       //console.log(typeof money); //number
       //console.log(typeof this.actual_account.balance); //string
+      await myPaymentsTools.deposit_money(money, this.actual_account.account_number, this.client)
 
-      for(let i=0; i<this.client.accounts.length; i++){
-        if(this.client.accounts[i].account_number === this.actual_account.account_number){
-          this.client.accounts[i].balance += parseFloat(money);
-        }
-      }
-
-      localStorage.setItem('client', JSON.stringify(this.client));
-
-      let id = this.client._id;
-
-      await axios({
-        method: 'put',
-        url: `http://localhost:5000/api/clients/${id}`,
-        data: this.client
-
-      });
 
 
       location.reload();

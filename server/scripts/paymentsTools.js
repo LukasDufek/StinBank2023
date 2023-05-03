@@ -271,8 +271,26 @@ PaymentsTools.convert_currency_manager = (sum, from_currency, to_currency) =>{
 
 }
 
+PaymentsTools.deposit_money_part = (money, account_number, client) => {
 
+    for (let i = 0; i < client.accounts.length; i++) {
+        if (client.accounts[i].account_number === account_number) {
+            client.accounts[i].balance += parseFloat(money);
+        }
+    }
+    return client;
 
+}
+
+PaymentsTools.generate_number = () => {
+    return Math.floor(Math.random() * 900000) + 100000;
+}
+
+PaymentsTools.deposit_money = async (money, account_number, client) => {
+
+    PaymentsTools.deposit_money_part(money, account_number, client);
+    await PaymentsTools.put_client(client, true);
+}
 
 
 

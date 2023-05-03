@@ -22,9 +22,6 @@
 <script>
 
 import axios from "axios";
-//import mailSender from "../../../server/mailSender";
-
-//const myMailSender = mailSender;
 
 export default {
   name: "loginComponent",
@@ -54,7 +51,6 @@ export default {
 
   methods:{
 
-
     login_compare(){
       for(let i=0; i<this.clients.length; i++){
         if(this.clients[i].mail === this.email && this.clients[i].password === this.password){
@@ -68,24 +64,52 @@ export default {
 
     },
 
-    loginSystem(){
+    async loginSystem() {
 
-        if(this.login_compare()){
-          //push do druheho overovaciho okna
-          //this.$router.push('./profile');
-          //myMailSender.send_mail();
+      if (this.login_compare()) {
+        //push do druheho overovaciho okna
+        this.$router.push('./between');
 
-          location.reload();
+        await this.sendEmail();
 
-        }else{
-          console.log('Nesprávné jméno nebo heslo');
-        }
+        //location.reload();
 
+      } else {
+        console.log('Nesprávné jméno nebo heslo');
+      }
+
+    },
+
+
+
+    async sendEmail() {
+
+      const formData = {
+        to: this.email
+      };
+
+     const response = await fetch("http://localhost:5000/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+
+      })
+      console.log(JSON.stringify(formData));
+      if (response.ok) {
+        alert('Email byl úspěšně odeslán.')
+      } else {
+        alert('Odeslání emailu se nezdařilo.')
+      }
     }
 
-  },
 
-}
+  }
+
+
+};
+
 </script>
 
 <style>

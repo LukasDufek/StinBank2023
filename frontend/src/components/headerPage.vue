@@ -1,44 +1,26 @@
 <template>
-
   <header class="header">
-
     <div class="logo">StinBank</div>
-
     <div class="navbar">
-
-        <h3>Vítejte v aplikaci StinBank</h3>
-
-
+      <h3>Vítejte v aplikaci StinBank</h3>
       <button class="logout-button" @click="logout">Odhlásit se</button>
-
-
-
-
-    </div >
-
-
+    </div>
   </header>
-
-
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
   name: "headerPage",
+  methods: {
+    logout() {
 
-  methods:{
-
-    /*
-    logout(){
-      localStorage.removeItem('client');
-      this.$router.push('./');
-
+      router.push('./');
+      localStorage.removeItem("client");
     }
-
-     */
-
   }
-}
+};
 </script>
 
 <style scoped>

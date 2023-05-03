@@ -1,5 +1,4 @@
-//const path = require('path');
-
+//const { defineConfig } = require('@vue/cli-service')
 module.exports = {
 
   devServer:{
@@ -12,6 +11,8 @@ module.exports = {
 
 
   },
+
+  lintOnSave: false,
 
   chainWebpack: config => {
     config.module

@@ -1,14 +1,6 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
-import {router} from './router';
-import axios from "axios";
+import router from './router'
+//import store from './store'
 
-Vue.config.productionTip = false
-
-// Setting up default vue http modules for api calls
-Vue.prototype.$http = axios;
-
-new Vue({
-  router,
-  render: h => h(App),
-}).$mount('#app')
+createApp(App).use(router).mount('#app')

@@ -5,11 +5,10 @@ const DownloadFile = {}
 
 
 
-DownloadFile.downloadTextFromUrl = () => {
-    let url = "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt";
+DownloadFile.downloadTextFromUrl = (url) => {
     let filename = 'server/file.txt'
     let htmlTagsRegex = /<\/?[a-z][\s\S]*>/i;
-    https.get(url, (response) => {
+    https.get(url,  (response) => {
         let data = '';
 
         response.on('data', (chunk) => {
@@ -17,14 +16,12 @@ DownloadFile.downloadTextFromUrl = () => {
         });
 
 
-        response.on('end', () => {
+        response.on('end',  () => {
             fs.writeFile(filename, data, (err) => {
-                if (htmlTagsRegex.test(data))
-                {
+                if (htmlTagsRegex.test(data)) {
                     console.log('error');
                     return 'error';
                 }
-                if (err) throw err;
                 console.log(`File downloaded and saved as ${filename}`);
             });
         });
@@ -33,25 +30,7 @@ DownloadFile.downloadTextFromUrl = () => {
     });
 
 
+
 }
 
-
-/*
-DownloadFile.downloadTextFromUrl2 = () =>{
-
-    const url = "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.txt";
-    const filename = 'server/file.txt';
-    const file = fs.createWriteStream(filename);
-    https.get(url, function(response) {
-        response.pipe(file);
-        file.on('finish', function() {
-            file.close();
-            console.log(`File downloaded and saved as ${filename}`);
-        });
-    }).on('error', function(error) {
-        fs.unlink(filename);
-        console.error(error);
-    });
-}
-*/
 module.exports = DownloadFile;

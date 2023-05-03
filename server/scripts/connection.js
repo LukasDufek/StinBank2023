@@ -15,4 +15,8 @@ createConnection.connect_database = () => {
 
 }
 
+createConnection.disconnect_database = () => {
+    mongoose.disconnect()
+}
+
 module.exports = createConnection;

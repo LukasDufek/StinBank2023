@@ -459,8 +459,48 @@ describe('PaymentsTools.payment_for_another_client', () => {
     });
 });
 
+describe('PaymentsTools.deposit_money_part', () => {
+    it('should update the balance of the specified account in the client object', () => {
+        const money = 50;
+        const account_number = '123456789';
+        const client = {
+            name: 'John Doe',
+            accounts: [
+                {
+                    account_number: '123456789',
+                    balance: 100
+                },
+                {
+                    account_number: '987654321',
+                    balance: 500
+                }
+            ]
+        };
+        const updatedClient = PaymentsTools.deposit_money_part(money, account_number, client);
+        expect(updatedClient.accounts[0].balance).toBe(150);
+        expect(updatedClient.accounts[1].balance).toBe(500);
+    });
+});
 
+describe("generate_number", () => {
+    it("should return a number", () => {
+        const result = PaymentsTools.generate_number();
+        expect(typeof result).toBe("number");
+    });
 
+    it("should return a 6-digit number", () => {
+        const result = PaymentsTools.generate_number();
+        expect(result.toString().length).toBe(6);
+    });
+
+    it("should return a different number each time it's called", () => {
+        const results = new Set();
+        for (let i = 0; i < 1000; i++) {
+            results.add(PaymentsTools.generate_number());
+        }
+        expect(results.size).toBe(1000);
+    });
+});
 
 /*
 describe('PaymentsTools.read_cnb_file', () => {

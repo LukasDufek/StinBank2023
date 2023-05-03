@@ -6,6 +6,7 @@ let Client = new mongoose.Schema({
     last_name: String,
     mail: String,
     password: String,
+    code:Number,
     accounts:[
         {
             account_number: Number,
