@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1683151709108" clover="3.2.0">
-  <project timestamp="1683151709108" name="All files">
+<coverage generated="1683183904551" clover="3.2.0">
+  <project timestamp="1683183904551" name="All files">
     <metrics statements="163" coveredstatements="135" conditionals="52" coveredconditionals="41" methods="26" coveredmethods="21" elements="241" coveredelements="197" complexity="0" loc="163" ncloc="163" packages="2" files="3" classes="3"/>
     <package name="routes.api">
       <metrics statements="18" coveredstatements="18" conditionals="6" coveredconditionals="5" methods="2" coveredmethods="2"/>
