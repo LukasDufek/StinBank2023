@@ -8,7 +8,7 @@ const PaymentsTools = {}
 PaymentsTools.load_all_clients = async () => {
     let all_clients = [];
     try {
-        all_clients = Array.from((await axios.get("http://localhost:5000/api/clients")).data);
+        all_clients = Array.from((await axios.get("/api/clients")).data);
     } catch (err) {
         console.log(err);
     }
@@ -65,7 +65,7 @@ PaymentsTools.save_clients = async (actual_client_change) => {
     let id = actual_client_change._id;
     await axios({
         method: 'put',
-        url: `http://localhost:5000/api/clients/${id}`,
+        url: `/api/clients/${id}`,
         data: actual_client_change
 
     });
@@ -151,7 +151,7 @@ PaymentsTools.put_client = async (client) => {
 
     await axios({
         method: 'put',
-        url: `http://localhost:5000/api/clients/${id}`,
+        url: `/api/clients/${id}`,
         data: client,
 
 
