@@ -22,8 +22,8 @@ sendMailRouter.post('/', async (req, res) => {
         port: 465,
         secure: true,
         auth: {
-            user: 'stinbanka@gmail.com',
-            pass: 'mikzsqmbgbszmstz',
+            user: 'stindufek@gmail.com',
+            pass: 'tdyacsqzwliqgzaj',
             //pass: 'Frameworkvuejs12',
         },
     });
@@ -47,8 +47,8 @@ sendMailRouter.post('/', async (req, res) => {
             console.log(`E-mail byl úspěšně odeslán: ${info.response}`);
             res.status(200).send('E-mail byl úspěšně odeslán.');
             const client = await Client.findOne({"mail": to}).exec()
-            console.log(client._id);
-            await Client.findByIdAndUpdate(client._id, {"code": code})
+            //console.log(client._id);
+            await Client.findByIdAndUpdate(client._id, {"code": code});
         }
     });
 
