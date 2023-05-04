@@ -9,7 +9,8 @@
     "server": "nodemon server/index.js --ignore './frontend' ",
     "frontend": "cd ./frontend &&  npm run serve",
     "dev": "concurrently \"npm run server\" \"npm run frontend\"",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
