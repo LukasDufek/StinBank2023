@@ -41,6 +41,7 @@
   "jest": {
     "collectCoverageFrom": [
       "server/**/*.js",
+      "!server/public/**/*.js",
       "!coverage/**/*.js",
       "!**/Client.js",
       "!**/index.js",

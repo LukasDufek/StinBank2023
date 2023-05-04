@@ -1,7 +1,7 @@
 <template>
   <div class="container-login">
     <div class="card card-container">
-      <h1 class="welcome">Vítejte v aplikaci</h1> <h3 class="logo">StinBank</h3>
+      <h1 class="welcome">Vítejte v aplikaci</h1> <h3 class="logo" style="color: red!important;">StinBank</h3>
       <h1 class="login-input">Přihlášení</h1>
       <img class="profile-img-card" alt="" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
 
