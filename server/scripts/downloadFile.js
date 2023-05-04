@@ -18,7 +18,7 @@ DownloadFile.downloadTextFromUrl = (url) => {
 
         response.on('end',  () => {
             fs.writeFile(filename, data, (err) => {
-                console.log(`File downloaded and saved as ${filename}`);
+                //console.log(`File downloaded and saved as ${filename}`);
             });
         });
     });
