@@ -44,7 +44,9 @@
       "!**/Client.js",
       "!**/index.js",
       "!**/jest.config.js",
-      "!**/connection.js"
+      "!**/connection.js",
+      "!**/sendMailRouter.js"
     ]
+
   }
 }

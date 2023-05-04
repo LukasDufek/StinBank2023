@@ -15,19 +15,20 @@ ClientRouter.get('/', async (req, res) => {
 
 
 })
+/*
+ClientRouter.post('/', async (req, res) => {
 
-// ClientRouter.post('/', async (req, res) => {
-//
-//     const newClient = new Client(req.body)
-//     try {
-//         const client = await newClient.save()
-//         if (!client) throw new Error('Something went wrong saving the item')
-//         res.status(200).json(client)
-//     } catch (error) {
-//         res.status(500).json({ message: error.message })
-//     }
-//
-// })
+    const newClient = new Client(req.body)
+    try {
+        const client = await newClient.save()
+        if (!client) throw new Error('Something went wrong saving the item')
+        res.status(200).json(client)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+
+})
+*/
 
 ClientRouter.put('/:id', async (req, res) => {
 

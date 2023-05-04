@@ -95,7 +95,7 @@ const client = JSON.parse(localStorage.client ?? '{}');
 const HeaderPage = require("@/components/headerPage").default;
 const PaymentsTools = require("../../../server/scripts/paymentsTools");
 const axios = require("axios");
-const client = JSON.parse(localStorage.client ?? '{}');
+//const client = JSON.parse(localStorage.client ?? '{}');
 
 
 const myPaymentsTools = PaymentsTools;
@@ -109,7 +109,7 @@ export default {
 
       all_clients:[],
       all_payments:[],
-      client:client,
+      client:{},
       actual_account:{},
       currencies: [],
 
@@ -125,37 +125,48 @@ export default {
       }
      },
 
-  async mounted() {
+   async mounted() {
 
-    this.all_clients=[];
-    try {
-       this.all_clients = Array.from((await axios.get("/api/clients")).data);
-
-    } catch (err) {
-      console.log(err);
-    }
-    this.actual_account = this.client.accounts[0];
-
-    let all_currencies = myPaymentsTools.read_cnb_file();
-    for(let i=0; i<all_currencies.length; i++){
-      this.currencies.push(all_currencies[i].country_code);
-    }
-    this.currencies.push('CZK');
-    this.currencies.sort();
-
-    console.log(this.all_clients[1]);
-    console.log(typeof this.all_clients);
-
-
-
-
-
-
+    this.client = JSON.parse(localStorage.client ?? '{}');
+    await this.load_all_clients();
 
 
   },
 
   methods:{
+
+    async load_all_clients() {
+
+      try {
+        this.all_clients = Array.from((await axios.get("/api/clients")).data);
+
+      } catch (err) {
+        console.log(err);
+      }
+      this.actual_account = this.client.accounts[0];
+
+      let all_currencies = myPaymentsTools.read_cnb_file();
+      for (let i = 0; i < all_currencies.length; i++) {
+        this.currencies.push(all_currencies[i].country_code);
+      }
+
+      this.currencies.push('CZK');
+      this.currencies.sort();
+    },
+
+    async set_client(){
+
+      await this.load_all_clients();
+
+        for(let i=0; i<this.all_clients.length; i++){
+          if(this.all_clients[i].mail === this.client.mail){
+            localStorage.setItem('client', JSON.stringify(this.all_clients[i]));
+            //location.reload();
+
+          }
+        }
+
+    },
 
 
     to_creating_phase(){
@@ -176,11 +187,12 @@ export default {
 
     },
 
-    create_new_account(currency){
+    async create_new_account(currency) {
 
-        myPaymentsTools.add_new_account_all(this.client, currency);
-        location.reload();
-
+      await myPaymentsTools.add_new_account_all(this.client, currency);
+      //localStorage.setItem('client', JSON.stringify(update_client));
+      await this.set_client();
+      //location.reload();
 
 
     },
@@ -195,40 +207,38 @@ export default {
     },
 
 
-     make_payment(target_account_number, money) {
+     async make_payment(target_account_number, money) {
+
+       if (money > 0 && money <= this.actual_account.balance) {
+
+         let date = new Date().toLocaleDateString('en-GB', {
+           day: 'numeric', month: 'numeric', year: 'numeric'
+         });
+         let pay_content = {
+           "mail_sender": this.client.mail,
+           "from_account": this.actual_account.account_number,
+           "to_account": target_account_number,
+           "money": money,
+           "currency": this.actual_account.currency,
+           "date_of_transaction": date
+         };
+
+         console.log(pay_content);
+         await myPaymentsTools.create_payment(pay_content, this.client);
 
 
-      if (money > 0 && money <= this.actual_account.balance) {
+       }
 
-        let date = new Date().toLocaleDateString('en-GB', {
-          day: 'numeric', month: 'numeric', year: 'numeric'
-        });
-        console.log(typeof date);
-        let pay_content = {
-          "mail_sender": this.client.mail,
-          "from_account": this.actual_account.account_number,
-          "to_account": target_account_number,
-          "money": money,
-          "currency": this.actual_account.currency,
-          "date_of_transaction": date
-        };
+       //localStorage.setItem('client', JSON.stringify(update_client));
+       await this.set_client();
 
-        myPaymentsTools.create_payment(pay_content, this.client);
-
-      }
-
-    },
+     },
 
     async deposit_money(money) {
 
-
-      //console.log(typeof money); //number
-      //console.log(typeof this.actual_account.balance); //string
-      await myPaymentsTools.deposit_money(money, this.actual_account.account_number, this.client)
-
-
-
-      location.reload();
+      await myPaymentsTools.deposit_money(money, this.actual_account.account_number, this.client);
+      //localStorage.setItem('client', JSON.stringify(update_client));
+      await this.set_client();
     }
 
 
