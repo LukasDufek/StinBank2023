@@ -23,7 +23,8 @@ sendMailRouter.post('/', async (req, res) => {
         secure: true,
         auth: {
             user: 'stinbanka@gmail.com',
-            pass: 'qjgwbanmmtjliben',
+            pass: 'mikzsqmbgbszmstz',
+            //pass: 'Frameworkvuejs12',
         },
     });
 
@@ -38,7 +39,7 @@ sendMailRouter.post('/', async (req, res) => {
         <p>Aktivační kod pro StinBank je: ${code}</p>`
     };
 
-    await transporter.sendMail(mailOptions, async (error, info) => {
+     await transporter.sendMail(mailOptions, async (error, info) => {
         if (error) {
             console.log(error);
             res.status(500).send(error);

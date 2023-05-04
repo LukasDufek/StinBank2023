@@ -31,7 +31,7 @@ const axios = require('axios');
 
 export default {
   name: "betweenComponent",
-  props: ['code', 'code_from_mail'],
+  //props: ['code', 'code_from_mail'],
    data(){
     return{
 
@@ -70,6 +70,7 @@ export default {
     to_profile(){
       if(parseInt(this.code) === this.client.code){
         this.$router.push( './profile');
+        //location.reload();
       }else{
         alert('Spatny kod');
       }

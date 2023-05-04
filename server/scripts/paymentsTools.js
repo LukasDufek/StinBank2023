@@ -1,4 +1,3 @@
-
 const axios = require('axios');
 //const file = require("./file.txt");
 //import file from './file.txt';
@@ -53,11 +52,11 @@ PaymentsTools.add_new_account_part = (actual_client, new_account, all_clients) =
 
 
 
-PaymentsTools.add_new_account_all = (actual_client, currency) => {
+PaymentsTools.add_new_account_all = async (actual_client, currency) => {
 
     let actual_client_change = PaymentsTools.add_new_account_part(actual_client, PaymentsTools.create_new_account(currency), PaymentsTools.load_all_clients());
-    PaymentsTools.save_clients(actual_client_change);
-    localStorage.setItem('client', JSON.stringify(actual_client_change));
+    await PaymentsTools.save_clients(actual_client_change);
+    //localStorage.setItem('client', JSON.stringify(actual_client_change));
 
 }
 
@@ -77,28 +76,22 @@ PaymentsTools.save_clients = async (actual_client_change) => {
 PaymentsTools.create_payment = async (pay_content, client) => {
 
 
-    let all_clients = PaymentsTools.load_all_clients();
+    let all_clients = await PaymentsTools.load_all_clients()
 
     let same_client = PaymentsTools.is_same_client(pay_content.to_account, all_clients);
 
 
-    if (same_client) {
 
+    if (same_client) {
 
         //1 strhnout penize odesilateli a ulozit do jeho seznamu plateb
 
 
         client = PaymentsTools.payment_for_same_client(pay_content, client);
 
-
-
-
-
         await PaymentsTools.put_client(client, true);
 
     } else if (!same_client && PaymentsTools.if_client_exist(pay_content.mail_sender, all_clients)) {
-
-
 
         let client_change = PaymentsTools.payment_for_another_client(pay_content, all_clients);
 
@@ -106,7 +99,7 @@ PaymentsTools.create_payment = async (pay_content, client) => {
 
         if (client_change !== null) {
 
-            await PaymentsTools.put_client(client, false);
+            await PaymentsTools.put_client(client);
         }
 
     }
@@ -152,11 +145,8 @@ PaymentsTools.payment_for_another_client = (pay_content, all_clients) =>{
 
 
 
-PaymentsTools.put_client = async (client, account_same_client) => {
+PaymentsTools.put_client = async (client) => {
 
-    if(account_same_client) {
-        localStorage.setItem('client', JSON.stringify(client));
-    }
     let id = client._id;
 
     await axios({
@@ -295,4 +285,3 @@ PaymentsTools.deposit_money = async (money, account_number, client) => {
 
 
 module.exports = PaymentsTools;
-//module.exports = file;

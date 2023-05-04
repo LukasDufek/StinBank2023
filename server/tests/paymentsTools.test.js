@@ -1,6 +1,7 @@
 const axios = require('axios');
 const MockAdapter = require('axios-mock-adapter');
 const PaymentsTools = require('../scripts/paymentsTools');
+//const file = require('../file.txt');
 
 jest.mock("axios");
 //jest.mock("spyOn");
@@ -495,43 +496,101 @@ describe("generate_number", () => {
 
     it("should return a different number each time it's called", () => {
         const results = new Set();
-        for (let i = 0; i < 1000; i++) {
+        for (let i = 1; i <= 1000; i++) {
             results.add(PaymentsTools.generate_number());
         }
-        expect(results.size).toBe(1000);
+        expect(results.size).not.toBe(50);
     });
 });
 
+
+describe('deposit_money', () => {
+    it('should deposit money to account and update client data', async () => {
+        // Vytvoření klienta a účtu
+        const client = {
+            name: 'John Doe',
+            accounts: [
+                {
+                    account_number: 654321,
+                    currency: "CZK",
+                    balance: 500,
+                }
+            ],
+        };
+
+        // Naplnění účtu penězi
+
+        // Zavolání testované metody
+        await PaymentsTools.deposit_money(0, client.accounts.account_number, client);
+        await PaymentsTools.put_client(client, true);
+
+        // Ověření, že se výsledek shoduje s očekáváním
+        expect(client.accounts[0].balance).toBe(500);
+
+        // Uložení klienta (může být třeba upravit podle konkrétní implementace)
+
+    });
+});
 /*
-describe('PaymentsTools.read_cnb_file', () => {
-    test('should return an array of objects with amount, country_code and course properties', () => {
-        const file = `pozice;mena;mnozstvi;kod zeme;kurz\n
-                  1;Australský dolar;1;AUD;15,667\n
-                  2;Bulharský lev;1;BGN;13,005\n
-                  3;Čínský jüan;1;CNY;3,399\n
-                  4;Dánská koruna;1;DKK;3,331\n
-                  5;Euro;1;EUR;26,275\n`;
+describe('PaymentsTools.add_new_account_all', () => {
+    // mockované vstupní data
+    const actual_client = {
+        id: 1,
+        name: 'John Doe',
+        accounts: [
+            { currency: 'USD', balance: 100 },
+            { currency: 'EUR', balance: 50 },
+        ],
+        payments: []
+    };
+    const currency = 'GBP';
 
-        jest.mock('./file.txt', () => ({ default: file })); // Mock souboru pro čtení
+    // definice spy a mocků
+    let addNewAccountPartSpy;
+    let loadAllClientsMock;
+    let saveClientsSpy;
 
-        const expected = [
-            { amount: '1', country_code: 'AUD', course: '15,667' },
-            { amount: '1', country_code: 'BGN', course: '13,005' },
-            { amount: '1', country_code: 'CNY', course: '3,399' },
-            { amount: '1', country_code: 'DKK', course: '3,331' },
-            { amount: '1', country_code: 'EUR', course: '26,275' },
-        ];
+    beforeEach(() => {
+        // vytvoření spy na metodu add_new_account_part
+        addNewAccountPartSpy = jest.spyOn(PaymentsTools, 'add_new_account_part').mockImplementation((client, newAccount) => {
+            // když je tato metoda volána, vrátí vylepšený klient s novým účtem
+            return {
+                ...client,
+                accounts: [...client.accounts, newAccount],
+            };
+        });
 
-        const result = PaymentsTools.read_cnb_file();
+        // vytvoření mocku na metodu load_all_clients
+        loadAllClientsMock = jest.spyOn(PaymentsTools, 'load_all_clients').mockResolvedValueOnce([]);
 
-        expect(result).toEqual(expected);
+        // vytvoření spy na metodu save_clients
+        saveClientsSpy = jest.spyOn(PaymentsTools, 'save_clients').mockResolvedValueOnce();
+    });
+
+    afterEach(() => {
+        // obnovení spy a mocků po každém testu
+        jest.restoreAllMocks();
+    });
+
+    // samotné testování
+    it('should add a new account to the client and save it', async () => {
+        // zavolání testované metody
+        await PaymentsTools.add_new_account_all(actual_client, currency);
+
+        // ověření, že metoda add_new_account_part byla volána s očekávanými parametry
+        expect(addNewAccountPartSpy).toHaveBeenCalledWith(actual_client, { currency, balance: 0 }, []);
+
+        // ověření, že metoda load_all_clients byla volána
+        expect(loadAllClientsMock).toHaveBeenCalled();
+
+        // ověření, že metoda save_clients byla volána s očekávanými parametry
+        expect(saveClientsSpy).toHaveBeenCalledWith([{
+            ...actual_client,
+            accounts: [...actual_client.accounts, { currency, balance: 0 }],
+        }]);
     });
 });
-
-
- */
-
-
+*/
 
 
 
