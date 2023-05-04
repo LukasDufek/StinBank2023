@@ -18,15 +18,9 @@ DownloadFile.downloadTextFromUrl = (url) => {
 
         response.on('end',  () => {
             fs.writeFile(filename, data, (err) => {
-                if (htmlTagsRegex.test(data)) {
-                    console.log('error');
-                    return 'error';
-                }
                 console.log(`File downloaded and saved as ${filename}`);
             });
         });
-    }).on('error', (err) => {
-        console.log(`Error: ${err.message}`);
     });
 
 
